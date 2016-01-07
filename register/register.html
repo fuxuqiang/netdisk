@@ -1,24 +1,33 @@
 <script src="jquery-1.11.3.min.js"></script>
 <h3>Register</h3>
-<table>
-	<tr><td>Username</td><td><input name="name" type="text"></td></tr>
-	<tr><td>Password</td><td><input name="pwd" type="password"></td></tr>
-	<tr><td>Confirm password</td><td><input name="pwd1" type="password"></td></tr>
-	<tr>
-		<td>birthday</td>
-		<td>
-			<select id="year" onchange="leap()"></select>
-			<select id="month" onchange="leap()"></select>
-			<select id="day"></select>
-		</td>
-	</tr>
-</table>
+<form method="post">
+	<table>
+		<tr><td>Username</td><td colspan="2"><input name="name" type="text"></td></tr>
+		<tr><td>Password</td><td colspan="2"><input name="pwd" type="password"></td></tr>
+		<tr><td>Confirm Password</td><td colspan="2"><input name="pwd1" type="password"></td></tr>
+		<tr>
+			<td>Birthday</td>
+			<td colspan="2">
+				<input type="hidden" name="birth">
+				<select id="year" onchange="setDate()"></select>
+				<select id="month" onchange="setDate()"></select>
+				<select id="day"></select>
+			</td>
+		</tr>
+		<tr>
+			<td>Captcha</td>
+			<td width="150"><input name="captcha" type="text" size="10"></td>
+			<td><img src="?a=captcha" onclick="this.src='?a=captcha&'+new Date()"></td>
+		</tr>
+		<tr height="50"><td></td><td colspan="2"><input type="submit" value="Submit"></td></tr>
+	</table>
+</form>
 <script>
 	var d = new Date();
 	var thisYear = d.getFullYear();
 	var thisMonth = d.getMonth()+1;
 	var thisDay = d.getDate();
-	
+
 	$(function(){
 		for(var i=100;i>=0;i--){
 			var y = thisYear-i;
@@ -32,8 +41,8 @@
 			$("#day").append("<option>"+d+"</option>");
 		}
 	});
-	
-	function leap(){
+
+	function setDate(){
 		var year = $("#year").val();
 		var month = parseInt($("#month").val());
 		var months = $("#month").children().length;
@@ -64,4 +73,8 @@
 			}
 		}
 	}
+
+	$("form").submit(function(){
+		$("input:hidden").val($("#year").val()+','+$("#month").val()+','+$("#day").val());
+	});
 </script>
