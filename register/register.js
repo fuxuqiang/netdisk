@@ -49,31 +49,48 @@ function setDate(){
 	}
 }
 
-var submit;
 var password = /^\w{6,16}$/;
 var email = /^\w+@\w+(\.\w{2,3}){1,2}$/;
 
+$("input[name=name]").change(function(){
+	$.post("?a=checkName", {name: $(this).val()}, function(msg){
+		if(msg==1){
+			$("#namepass").show();
+			$("#namepass").next().hide();
+		}else{
+			$("#namepass").hide();
+			$("#namepass").next().show();
+		}
+	});
+});
+
 $("input[name=pwd]").change(function(){
-	if(password.test($(this).val())){
-		$("#pwdpass").show();
-		$("#pwdpass").next().hide();
-		submit = true;
+	if($(this).val()){
+		if(password.test($(this).val())){
+			$("#pwdpass").show();
+			$("#pwdpass").next().hide();
+		}else{
+			$("#pwdpass").hide();
+			$("#pwdpass").next().show();
+		}
 	}else{
 		$("#pwdpass").hide();
-		$("#pwdpass").next().show();
-		submit = false;
-	}
+		$("#pwdpass").next().hide();
+	}	
 });
 
 $("input[name=pwd],#pwd1").blur(function(){
-	if($("#pwd1").val()==$("input[name=pwd]").val()){
-		$("#pwd1pass").show();
-		$("#pwd1pass").next().hide();
-		submit = true;
-	}else if($("#pwd1").val()){
+	if($("input[name=pwd]").val() && $("#pwd1").val()){
+		if($("#pwd1").val()==$("input[name=pwd]").val()){
+			$("#pwd1pass").show();
+			$("#pwd1pass").next().hide();
+		}else if($("#pwd1").val()){
+			$("#pwd1pass").hide();
+			$("#pwd1pass").next().show();
+		}
+	}else{
 		$("#pwd1pass").hide();
-		$("#pwd1pass").next().show();
-		submit = false;
+		$("#pwd1pass").next().hide();
 	}
 });
 
@@ -81,46 +98,38 @@ $("input[name=email]").change(function(){
 	if(email.test($(this).val())){
 		$("#emailpass").show();
 		$("#emailpass").next().hide();
-		submit = true;
 	}else{
 		$("#emailpass").hide();
 		$("#emailpass").next().show();
-		submit = false;
 	}
-})
+});
 
 $("#captcha").change(function(){
-	$.post("?a=verify", {captcha: $("#captcha").val()}, function(msg){
+	$.post("?a=verify", {captcha: $(this).val()}, function(msg){
 		if(msg==1){
 			$("#captchapass").show();
 			$("#captchapass").next().hide();
-			$("#captcha").attr("disabled","disabled");
-			$("img").removeAttr("onclick");
-			submit = true;
 		}else{
 			$("#captchapass").next().show();
-			submit = false;
 		}
 	});
 });
 $("#captcha").on("input",function(){
 	if($("#captcha").val().length==4){
-		$.post("?a=verify", {captcha: $("#captcha").val()}, function(msg){
+		$.post("?a=verify", {captcha: $(this).val()}, function(msg){
 			if(msg==1){
 				$("#captchapass").show();
 				$("#captchapass").next().hide();
 				$("#captcha").attr("disabled","disabled");
 				$("img").removeAttr("onclick");
-				submit = true;
 			}else{
 				$("#captchapass").next().show();
-				submit = false;
 			}
 		});
 	}
 });
 
 $("form").submit(function(){
-	if(!submit) return false;
+	if($("#namepass").next().attr("style")=="display: inline;" || $("#pwdpass").next().attr("style")=="display: inline;" || $("#pwd1pass").next().attr("style")=="display: inline;" || $("#emailpass").next().attr("style")=="display: inline;" || $("#captchapass").next().attr("style")=="display: inline;") return false;
 	$("input:hidden").val($("#year").val()+','+$("#month").val()+','+$("#day").val());
 });
