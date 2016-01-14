@@ -9,8 +9,8 @@ class MySQLPDO{
 		'dbname'=>'',
 	);
 	private static $instance;
-
-	public $db;
+	private $data = array();
+	private $db;
 
 	private function __construct($params){
 		$this->dbConfig = array_merge($this->dbConfig,$params);
@@ -28,5 +28,23 @@ class MySQLPDO{
 			self::$instance = new self($params);
 		}
 		return self::$instance;
+	}
+	public function data($data){
+		$this->data = $data;
+		return $this;
+	}
+	public function query($sql,$batch=false){
+		$data = $batch? $this->data:array($this->data);
+		$this->data = array();
+		try{
+			$stmt = $this->db->prepare($sql);
+			foreach($data as $v){
+				$stmt->execute($v);
+			}
+		}catch(PDOException $e){
+			echo $e->getMessage();
+			return false;
+		}
+		return $stmt;
 	}
 }

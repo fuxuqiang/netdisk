@@ -1,4 +1,4 @@
-<script src="../jquery-1.11.3.min.js"></script>
+<script src="/jquery-1.11.3.min.js"></script>
 <style>.pass,.message{display: none;}</style>
 <h3>Register</h3>
 <form method="post">
@@ -34,10 +34,12 @@
 		<tr>
 			<td>Captcha</td>
 			<td width="150"><input id="captcha" type="text" size="10" required></td>
-			<td><img src="?a=captcha" onclick="this.src='?a=captcha&'+new Date()"></td>
+			<td>
+				<img src="/netdisk/index.php/user/captcha" onclick="this.src='/netdisk/index.php/user/captcha?t='+new Date()">
+			</td>
 			<td><label id="captchapass" class="pass">√</label><label class="message">Incorrect</label></td>
 		</tr>
-		<tr height="50"><td></td><td colspan="2"><input type="submit" value="Submit"></td></tr>
+		<tr height="50"><td></td><td colspan="3"><input type="submit" value="Submit"></td></tr>
 	</table>
 </form>
-<script src="register.js"></script>
+<script src="/netdisk/register.js"></script>

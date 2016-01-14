@@ -53,7 +53,7 @@ var password = /^\w{6,16}$/;
 var email = /^\w+@\w+(\.\w{2,3}){1,2}$/;
 
 $("input[name=name]").change(function(){
-	$.post("?a=checkName", {name: $(this).val()}, function(msg){
+	$.post("/netdisk/index.php/user/checkName", {name: $(this).val()}, function(msg){
 		if(msg==1){
 			$("#namepass").show();
 			$("#namepass").next().hide();
@@ -105,7 +105,7 @@ $("input[name=email]").change(function(){
 });
 
 $("#captcha").change(function(){
-	$.post("?a=verify", {captcha: $(this).val()}, function(msg){
+	$.post("/netdisk/index.php/user/verify", {captcha: $(this).val()}, function(msg){
 		if(msg==1){
 			$("#captchapass").show();
 			$("#captchapass").next().hide();
@@ -116,7 +116,7 @@ $("#captcha").change(function(){
 });
 $("#captcha").on("input",function(){
 	if($("#captcha").val().length==4){
-		$.post("?a=verify", {captcha: $(this).val()}, function(msg){
+		$.post("/netdisk/index.php/user/verify", {captcha: $(this).val()}, function(msg){
 			if(msg==1){
 				$("#captchapass").show();
 				$("#captchapass").next().hide();
