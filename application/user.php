@@ -5,9 +5,18 @@ function register(){
 		$data['pwd'] = $_POST['pwd'];
 		$data['birth'] = $_POST['birth'];
 		$data['email'] = $_POST['email'];
-		$db = MySQLPDO::getInstance(array('dbname'=>'test'));
-		if($db->data($data)->query('insert into `user` (`name`,`pwd`,`email`,`birth`) values (:name,:pwd,:email,:birth)')){
-			echo '<script>alert("register succeed");location.href="/netdisk/index.php/user/login"</script>';
+		$db = MySQLPDO::getInstance();
+		$user_sql = 'insert into `user` (`name`,`pwd`,`email`,`birth`) values (:name,:pwd,:email,:birth)';
+		$folder_sql = 'insert into `folder` (`folder_name`,`user_id`,`folder_time`,`folder_path`,`folder_pid`) values (?,?,now(),?,?)';
+		$db->db->beginTransaction();
+		if($db->data($data)->query($user_sql)!=false){
+			$user_id = $db->db->lastInsertId();
+			if(!$db->data(array('My Document',$user_id,0,0))->query($folder_sql)){
+				$db->db->rollBack;
+			}else{
+				$db->db->commit();
+				echo '<script>alert("register succeed");location.href="/netdisk/index.php/user/login"</script>';
+			}
 		}
 	}else require 'register.html';
 }
@@ -16,8 +25,8 @@ function login(){
 	if(!empty($_POST)){
 		if($_POST['captcha']==$_SESSION['captcha']){
 			$name = $_POST['name'];
-			$db = MySQLPDO::getInstance(array('dbname'=>'test'));
-			$row = $db->query("select `pwd` from `user` where `name`='$name'")->fetch();
+			$db = MySQLPDO::getInstance();
+			$row = $db->fetch("select `id`,`pwd` from `user` where `name`='$name'");
 			if($row){
 				$pwd = $_POST['pwd'];
 				if($pwd==$row['pwd']){
@@ -26,6 +35,7 @@ function login(){
 						setcookie('pwd',$pwd,time()+3600*24*3,'/netdisk/');
 					}
 					$_SESSION['name'] = $name;
+					$_SESSION['id'] = $row['id'];
 					echo 4;
 				}
 				else echo 3;
@@ -48,8 +58,8 @@ function verify(){
 
 function checkName(){
 	$name = $_POST['name'];
-	$db = MySQLPDO::getInstance(array('dbname'=>'test'));
-	if($db->query("select * from `user` where `name`='$name'")->fetch()) echo 0;
+	$db = MySQLPDO::getInstance();
+	if($db->fetch("select * from `user` where `name`='$name'")) echo 0;
 	else echo 1;
 }
 

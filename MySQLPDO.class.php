@@ -6,11 +6,12 @@ class MySQLPDO{
 		'user'=>'root',
 		'pwd'=>'eb',
 		'charset'=>'utf8',
-		'dbname'=>'',
+		'dbname'=>'test',
 	);
 	private static $instance;
 	private $data = array();
-	private $db;
+	
+	public $db;
 
 	private function __construct($params){
 		$this->dbConfig = array_merge($this->dbConfig,$params);
@@ -46,5 +47,11 @@ class MySQLPDO{
 			return false;
 		}
 		return $stmt;
+	}
+	public function fetch($sql){
+		return $this->query($sql)->fetch();
+	}
+	public function fetchAll($sql){
+		return $this->query($sql)->fetchAll();
 	}
 }
