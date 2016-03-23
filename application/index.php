@@ -4,8 +4,10 @@ function index(){
 	if(isset($_COOKIE['name']) && isset($_COOKIE['pwd'])){
 		$name = $_COOKIE['name'];
 		$pwd = $_COOKIE['pwd'];
-		if($pwd==$db->fetch("select `pwd` from `user` where `name`='$name'")[0]) {
+		$row = $db->fetch("select `id`,`pwd` from `user` where `name`='$name'");
+		if($pwd==$row['pwd']) {
 			$_SESSION['name'] = $name;
+			$_SESSION['id'] = $row['id'];
 		}
 	}
 	if(isset($_SESSION['id'])){
